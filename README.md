@@ -7,6 +7,7 @@ Also find "Evidence" screenshots attached in the repo.
 
 The Project Structure along with Trade-offs and limitations are outlined at the end of this file.
 
+>>  **Submission branch:** `submission`. This is the version to review. `main` contains the original training code.
 
 *********************************************************************************************************
 SUMMARY
