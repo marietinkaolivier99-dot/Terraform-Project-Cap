@@ -26,19 +26,11 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-# GitHub's OIDC provider thumbprints (root CA fingerprints). AWS validates
-# the token signature via TLS, so these values rarely change and are the
-# ones GitHub/AWS have published for actions.githubusercontent.com.
 resource "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 
   client_id_list = [
     "sts.amazonaws.com",
-  ]
-
-  thumbprint_list = [
-    "6938fd4d98bab03faadb97b34396831e3780aea",
-    "1c58a3a8518e8759bf075b76b750d4f2df264fcd",
   ]
 }
 
@@ -60,9 +52,9 @@ resource "aws_iam_role" "github_actions" {
           }
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-              "repo:${var.github_org}/${var.github_repo}:ref:refs/heads/main",
-              "repo:${var.github_org}/${var.github_repo}:pull_request",
-              "repo:${var.github_org}/${var.github_repo}:environment:*",
+              "repo:${var.github_org}@346335941/${var.github_repo}@1429661768:ref:refs/heads/main",
+              "repo:${var.github_org}@346335941/${var.github_repo}@1429661768:pull_request",
+              "repo:${var.github_org}@346335941/${var.github_repo}@1429661768:environment:*",
             ]
           }
         }
@@ -130,12 +122,12 @@ resource "aws_iam_role_policy" "github_actions" {
           "s3:ListBucket",
         ]
         Resource = [
-          "arn:aws:s3:::seemat-s3-dev",
-          "arn:aws:s3:::seemat-s3-dev/*",
-          "arn:aws:s3:::seemat-s3-qa",
-          "arn:aws:s3:::seemat-s3-qa/*",
-          "arn:aws:s3:::seemat-s3-prod",
-          "arn:aws:s3:::seemat-s3-prod/*",
+          "arn:aws:s3:::olivier-m-s3-dev",
+          "arn:aws:s3:::olivier-m-s3-dev/*",
+          "arn:aws:s3:::olivier-m-s3-qa",
+          "arn:aws:s3:::olivier-m-s3-qa/*",
+          "arn:aws:s3:::olivier-m-s3-prod",
+          "arn:aws:s3:::olivier-m-s3-prod/*",
         ]
       }
     ]

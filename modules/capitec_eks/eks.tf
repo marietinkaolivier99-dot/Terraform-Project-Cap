@@ -1,5 +1,7 @@
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 }
 
 resource "aws_subnet" "public" {
@@ -33,8 +35,9 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_eks_cluster" "example" {
+resource "aws_eks_cluster" "main" {
   name = local.eks_cluster_name
+
 
   access_config {
     authentication_mode = "API"
@@ -87,13 +90,13 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_eks_access_entry" "admin" {
-  cluster_name  = aws_eks_cluster.example.name
+  cluster_name  = aws_eks_cluster.main.name
   principal_arn = data.aws_caller_identity.current.arn
   type          = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "admin" {
-  cluster_name  = aws_eks_cluster.example.name
+  cluster_name  = aws_eks_cluster.main.name
   principal_arn = aws_eks_access_entry.admin.principal_arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
@@ -139,12 +142,12 @@ resource "aws_security_group_rule" "nodeport_ingress" {
   to_port           = 30007
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_eks_cluster.example.vpc_config[0].cluster_security_group_id
+  security_group_id = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
   description       = "Allow inbound access to nginx NodePort service"
 }
 
 resource "aws_eks_node_group" "main" {
-  cluster_name    = aws_eks_cluster.example.name
+  cluster_name    = aws_eks_cluster.main.name
   node_group_name = "${var.prefix}-eks-nodes-${var.environment}"
   node_role_arn   = aws_iam_role.node.arn
   subnet_ids      = aws_subnet.public[*].id

@@ -1,11 +1,15 @@
 variable "prefix" {
-  type    = string
-  default = "seemat"
+  type = string
 }
 
 variable "environment" {
-  type    = string
-  default = "dev"
+  type = string
+
+  validation {
+    condition     = contains(["dev", "qa", "prod"], var.environment)
+    error_message = "Only dev, qa and prod allowed."
+  }
+
 }
 
 locals {
@@ -17,6 +21,6 @@ variable "availability_zones" {
   default = ["af-south-1a", "af-south-1b", "af-south-1c"]
 }
 
-variable "vpc_id" {
-  default = "vpc-0d0015b3beb893003"
-}
+# variable "vpc_id" {
+#   default = "vpc-0d0015b3beb893003"
+# }

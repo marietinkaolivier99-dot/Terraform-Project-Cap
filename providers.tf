@@ -6,6 +6,8 @@ terraform {
     }
   }
   backend "s3" {}
+  # partial backend, supplied dynamically by the .tfbackend file
+  # left blank on purpose so the backend can be different for each environment 
 }
 
 provider "aws" {
