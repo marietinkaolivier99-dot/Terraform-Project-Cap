@@ -5,3 +5,5 @@
 *.tfplan
 tfplan
 plan_output.txt
+.idea/
+.claude-flow/
